@@ -1,0 +1,89 @@
+
+
+@extends('admin.layouts.layout')
+@section('styles')
+
+@endsection
+
+@section('page-title')
+    {{$page_title}}
+@endsection
+
+@section('current-page-name')
+    
+    {{$page_title}}
+@endsection
+
+@section('page-links')
+    <li class="breadcrumb-item "><a href="{{route('HRJobs.index')}}"> شئون الموظفين</a></li>
+    
+
+    
+@endsection
+
+@section('content')
+    <section class="items-add-page my-3 py-4" style="background-color: white;">
+        
+        @if(Session::has('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              {{Session::get('success')}}
+            </div>
+        @endif
+
+        <form action="{{route('HRJobs.update',$row_data->id)}}" enctype="multipart/form-data" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="row">
+
+                <div class="col-lg-12 col-md-12  mb-4">
+                    <label class="label mb-2 ">الإسم</label>
+                    <input type="text" name="title"  value="{{$row_data->title}}" class="form-control" data-validation="required">
+                    @error('title')
+                        {{$messages}}
+                    @enderror
+                </div>
+                
+                <div class="col-lg-12 col-md-12  mb-4">
+                    <label class="label mb-2 ">القسم</label>
+                    <select name="department_id" class="form-control">
+                        @foreach($departments as $department)
+                            <option value="{{$department->id}}" {{isset($row_data)&&$row_data->department_id == $department->id ? 'selected' : ''}} > {{$department->title}}</option>
+                        @endforeach
+                    </select>
+                    @error('department_id')
+                        {{$messages}}
+                    @enderror
+                </div>
+                
+                <div class="col-lg-12 col-md-12  mb-4">
+                    <label class="label mb-2 ">الحد الأقصى للراتب</label>
+                    <input type="text" name="max_salary"  value="{{isset($row_data)?$row_data->max_salary:''}}" class="form-control" data-validation="required">
+                    @error('max_salary')
+                        {{$messages}}
+                    @enderror
+                </div>
+                
+                <div class="col-lg-12 col-md-12  mb-4">
+                    <label class="label mb-2 ">الحد الأدنى للراتب</label>
+                    <input type="text" name="min_salary"  value="{{isset($row_data)?$row_data->min_salary:''}}" class="form-control" data-validation="required">
+                    @error('min_salary')
+                        {{$messages}}
+                    @enderror
+                </div>
+
+                @if(isset($row_data))
+                    <input type="hidden" name="id" value="{{$row_data->id}}" />
+                @endif
+                
+                <div class="w-100 pb-3 d-flex align-items-center justify-content-center">
+                    <button type="submit" class="btn edit-profile"> حفظ </button>
+                </div>
+
+            </div>
+        </form>
+        
+    </section>
+@endsection
