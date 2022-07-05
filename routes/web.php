@@ -354,6 +354,7 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::get('appointments/mainfront', 'AppointmentsController@mainfront')->name('appointments.mainfront');
     Route::get('appointments/today', 'AppointmentsController@today')->name('appointments.today');
     Route::get('appointments/tomorrow', 'AppointmentsController@tomorrow')->name('appointments.tomorrow');
+    Route::post('appointments/entry/{appointment}', 'AppointmentsController@entry')->name('appointments.entry');
     Route::resource('appointments', 'AppointmentsController');
 
 

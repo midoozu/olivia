@@ -82,7 +82,7 @@
                                         @endif
                                         <span class="help-block">{{ trans('cruds.appointment.fields.services_helper') }}</span>
                                     </div>
-                                    <input type="text" value="{{Auth::user()->branch->id}}" name="branch_id" id="branch_id" hidden>
+                                    <input type="text" value="{{Auth::user()->branch->id}}" name="branch_id" id="branch_id" disabled>
 
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>

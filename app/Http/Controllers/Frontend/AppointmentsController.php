@@ -89,10 +89,10 @@ class AppointmentsController extends Controller
         if ($appointment instanceof Appointment) {
             toastr()->success('Data has been saved successfully!');
 
-            return redirect()->route('frontend.appointments.index');
         }
-
-        toastr()->error('An error has occurred please try again later.');
+else {
+    toastr()->error('An error has occurred please try again later.');
+}
 
         return back();
 
@@ -105,7 +105,7 @@ class AppointmentsController extends Controller
             'cs_name_id'=>$request->client_id ,
             'branch_id'=> Auth::user()->branch_id ,
         ]);
-        return redirect()->route('frontend.appointments.mainfront');
+        return redirect()->back('frontend.appointments.mainfront');
     }
     public function today( )
     {
@@ -124,7 +124,20 @@ class AppointmentsController extends Controller
 
         $appointments = Appointment::with(['client', 'doctor', 'services', 'products', 'branch'])->where('branch_id', Auth::user()->branch_id)->whereDate('start_time', '=', Carbon::tomorrow()->toDateString())->get();
 
-        return view('frontend.appointments.tomorrow');
+        return view('frontend.appointments.tomorrow', compact('appointments'));
+    }
+
+    public function entry(Request $request){
+
+        dd($request->PHP_SELF);
+        $appointment->update([
+            'payment_method'=>$request->payment_method,
+            'price'=>$request->price,
+            'discount'=>$request->discount,
+            'check_in'=>1
+
+        ]);
+return $appointment;
     }
 
     public function edit(Appointment $appointment)

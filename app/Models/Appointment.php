@@ -42,6 +42,7 @@ class Appointment extends Model
         'deleted_at',
         'used_pulse',
         'power',
+        'payment_method'
     ];
 
     public function client()

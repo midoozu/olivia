@@ -102,14 +102,14 @@
                                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                                     </form>
                                                 @endcan
-                                                    <a class="btn btn-warning btn-sm" href="{{ route('frontend.appointments.edit', $appointment->id) }}" data-toggle="modal" data-target="#entry">
+                                                    <a class="btn btn-warning btn-sm"  data-toggle="modal" data-target="#entry">
                                                         {{ "حضور"  }}
                                                     </a>
-                                                    <a class="btn btn-danger btn-sm" href="{{ route('frontend.appointments.edit', $appointment->id) }}" data-toggle="modal" data-target="#exit">
+                                                    <a class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#exit">
                                                         {{  " خروج"}}
                                                     </a>
 
-                                                    <a class="btn btn-default btn-sm" href="{{ route('frontend.appointments.edit', $appointment->id) }}">
+                                                    <a class="btn btn-default btn-sm" >
                                                         {{  " متابعه"}}
                                                     </a>
                                         </td>
@@ -128,18 +128,18 @@
     </div>
 {{--    --}}
 {{--    modal start --}}
-    <div class="modal fade" id="entry" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="entry" tabindex="-1" role="dialog" aria-labelledby="entry" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="entry">Modal title</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ route("frontend.appointments.update", [$appointment->id ?? ''])}}" enctype="multipart/form-data">
-                        @method('PUT')
+                    <form method="POST" action="{{ route("frontend.appointments.entry", [$appointment->id])}}" enctype="multipart/form-data">
+                        @method('POST')
                         @csrf
 
 {{--                        <div class="form-group">--}}
@@ -160,7 +160,7 @@
 
                         <div class="form-check form-check-radio col-2 " >
                             <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" >
+                                <input class="form-check-input" type="radio" name="payment_method" id="payment_method" value="cash" checked required>
                                 {{"كاش"}}
                                 <span class="circle">
                                       <span class="check"></span>
@@ -169,7 +169,7 @@
                         </div>
                         <div class="form-check form-check-radio   col-2  ">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2" checked>
+                                <input class="form-check-input" type="radio" name="payment_method" id="payment_method" value="visa" >
                                 {{"فيزا"}}
                                 <span class="circle">
                               <span class="check"></span>
@@ -179,7 +179,7 @@
 
                         <div class="form-group">
                             <label for="price">{{ trans('cruds.appointment.fields.price') }}</label>
-                            <input class="form-control" type="number" name="price" id="price" value="{{ old('price', '') }}" step="0.01">
+                            <input class="form-control" type="number" name="price" id="price" value="{{ old('price', '') }}" step="0.01" required>
                             @if($errors->has('price'))
                                 <div class="invalid-feedback">
                                     {{ $errors->first('price') }}
@@ -266,7 +266,7 @@
                             </div>
                         </div>
 
-                        <input type="text" name="check_out" id="check_out" value="1">
+                        <input type="text" name="check_out" id="check_out" value="1" hidden>
 
                     </form>
 
