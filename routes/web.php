@@ -303,10 +303,12 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
 
 // Crm Status
     Route::delete('crm-statuses/destroy', 'CrmStatusController@massDestroy')->name('crm-statuses.massDestroy');
+
     Route::resource('crm-statuses', 'CrmStatusController');
 
 // Crm Customer
     Route::delete('crm-customers/destroy', 'CrmCustomerController@massDestroy')->name('crm-customers.massDestroy');
+    Route::post('crm-customers/new', 'CrmCustomerController@new')->name('crm-customers.new');
     Route::resource('crm-customers', 'CrmCustomerController');
 
 // Crm Note
@@ -354,7 +356,11 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::get('appointments/mainfront', 'AppointmentsController@mainfront')->name('appointments.mainfront');
     Route::get('appointments/today', 'AppointmentsController@today')->name('appointments.today');
     Route::get('appointments/tomorrow', 'AppointmentsController@tomorrow')->name('appointments.tomorrow');
+    Route::post('appointments/follow_up/{appointment}', 'AppointmentsController@follow_up')->name('appointments.follow_up');
     Route::post('appointments/entry/{appointment}', 'AppointmentsController@entry')->name('appointments.entry');
+
+    Route::post('appointments/exit/{appointment}', 'AppointmentsController@exit')->name('appointments.exit');
+    Route::get('appointments/check/{appointment}', 'AppointmentsController@check')->name('appointments.check');
     Route::resource('appointments', 'AppointmentsController');
 
 

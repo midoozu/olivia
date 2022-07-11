@@ -10,7 +10,7 @@
                 <div style="margin-bottom: 10px;" class="row">
                     <div class="col-lg-12" >
                         <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#createAppointment"  >{{ trans('global.add') }} {{ trans('cruds.appointment.title_singular') }}</button>
-                        <button type="button" class="btn btn-info">{{"اضافه عميل"}}</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#createCustomer">{{"اضافه عميل"}}</button>
                         <button type="button" class="btn btn-success">{{"اضافه مصاريف"}}</button>
                         <button type="button" class="btn btn-danger">{{"تسليم الايراد"}}</button>
                         <button type="button" class="btn btn-warning">{{" اجمالي كاش "}}</button>
@@ -19,12 +19,63 @@
                     </div>
                 </div>
 
+                <div class="modal fade" id="createCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">{{"اضافه عميل"}}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{{ route("frontend.crm-customers.new") }}" enctype="multipart/form-data">
+                                    @method('POST')
+                                    @csrf
+
+                                    <div class="form-group">
+                                        <label class="required" for="first_name">{{ trans('cruds.crmCustomer.fields.first_name') }}</label>
+                                        <input class="form-control" type="text" name="first_name" id="first_name" value="{{ old('first_name', '') }}" required>
+                                        @if($errors->has('first_name'))
+                                            <div class="invalid-feedback">
+                                                {{ $errors->first('first_name') }}
+                                            </div>
+                                        @endif
+                                        <span class="help-block">{{ trans('cruds.crmCustomer.fields.first_name_helper') }}</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="required" for="phone">{{ trans('cruds.crmCustomer.fields.phone') }}</label>
+                                        <input class="form-control" type="text" name="phone" id="phone" value="{{ old('phone', '') }}" required>
+                                        @if($errors->has('phone'))
+                                            <div class="invalid-feedback">
+                                                {{ $errors->first('phone') }}
+                                            </div>
+                                        @endif
+                                        <span class="help-block">{{ trans('cruds.crmCustomer.fields.phone_helper') }}</span>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <div class="form-group">
+                                            <button class="btn btn-danger" type="submit">
+                                                {{ trans('global.save') }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="modal fade" id="createAppointment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">{{"اضافه حجز"}}</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -68,11 +119,11 @@
                                         <span class="help-block">{{ trans('cruds.appointment.fields.start_time_helper') }}</span>
                                     </div>
 
-                                    <div class="form-group">
+                                    <div class="form-group" >
                                         <label class="required" for="services">{{ trans('cruds.appointment.fields.services') }}</label>
-                                        <select class="form-control select2" name="services[]" id="services" multiple required>
+                                        <select  class="form-control  select2" name="services[]" id="services"  multiple required>
                                             @foreach($services as $id => $service)
-                                                <option value="{{ $id }}" {{ in_array($id, old('services', [])) ? 'selected' : '' }}>{{ $service }}</option>
+                                                <option  value="{{ $id }}" {{ in_array($id, old('services', [])) ? 'selected' : '' }}>{{ $service }}</option>
                                             @endforeach
                                         </select>
                                         @if($errors->has('services'))
@@ -99,6 +150,7 @@
                         </div>
                     </div>
                 </div>
+
             @endcan
 
        <div class="card-body" >
@@ -125,7 +177,7 @@
                        <ul class="list-group list-group-flush">
                            <li class="list-group-item">اضافه عميل</li>
                            <li class="list-group-item">بحث عن عميل</li>
-                           <li class="list-group-item">جميع العملاء</li>
+                           <li class="list-group-item"><a href="{{route('frontend.crm-customers.index')}}">{{'جميع العملاء'}}</a></li>
                        </ul>
                    </div>
                </div>
@@ -184,4 +236,15 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        $('#services').select2({
+            dropdownParent: $('#createAppointment')
+        });
+        $('#doctor_id').select2({
+            dropdownParent: $('#createAppointment')
+        });
+    </script>
+
+@endpush
 

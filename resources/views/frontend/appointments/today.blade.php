@@ -111,24 +111,23 @@
                                                         </form>
                                                     @endcan
                                                     <a class="btn btn-warning btn-sm" data-toggle="modal"
-                                                       data-target="#entry" href="">
+                                                       data-target="#entry{{$appointment->id}}" href="">
                                                         {{ "حضور"  }}
                                                     </a>
                                                     <a class="btn btn-danger btn-sm" data-toggle="modal"
-                                                       data-target="#exit"
+                                                       data-target="#exit{{$appointment->id}}"
                                                        href="">
                                                         {{  " خروج"}}
                                                     </a>
-
-                                                    <a class="btn btn-default btn-sm" href="#">
-                                                        {{  " متابعه"}}
+                                                    <a class="btn btn-default btn-sm"  href="{{route('frontend.appointments.check', $appointment->id)}}">
+                                                        {{  " حساب العميل"}}
                                                     </a>
 
                                                 </td>
                                             </tr>
                                         @endif
                                         {{--    modal start --}}
-                                        <div class="modal fade" id="entry" tabindex="-1" role="dialog"
+                                        <div class="modal fade" id="entry{{$appointment->id}}" tabindex="-1" role="dialog"
                                              aria-labelledby="entry" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -142,11 +141,10 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <form method="POST"
-                                                              action="{{ route("frontend.appointments.entry", [$appointment->id])}}"
+                                                              action="{{ route("frontend.appointments.entry", $appointment->id)}}"
                                                               enctype="multipart/form-data">
                                                             @method('POST')
                                                             @csrf
-
                                                             <div class="form-check form-check-radio col-2 ">
                                                                 <label class="form-check-label">
                                                                     <input class="form-check-input"
@@ -219,8 +217,7 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="modal fade" id="exit" tabindex="-1" role="dialog"
+                                        <div class="modal fade" id="exit{{$appointment->id}}" tabindex="-1" role="dialog"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -235,9 +232,9 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <form method="POST"
-                                                              action="{{ route("frontend.appointments.update", [$appointment->id ?? '']) }}"
+                                                              action="{{ route("frontend.appointments.exit", $appointment->id ) }}"
                                                               enctype="multipart/form-data">
-                                                            @method('PUT')
+                                                            @method('POST')
                                                             @csrf
 
                                                             <div class="form-group">
@@ -271,7 +268,7 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label
-                                                                    for="pulse">{{ " بلص اضافي" }}</label>
+                                                                    for="extra_pulse">{{ " بلص اضافي" }}</label>
                                                                 <input class="form-control" type="number"
                                                                        name="pulse" id="pulse"
                                                                        value="{{ old('pulse', '') }}"
@@ -283,6 +280,30 @@
                                                                 @endif
                                                                 <span
                                                                     class="help-block">{{ trans('cruds.appointment.fields.pulse_helper') }}</span>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="weight">{{ trans('cruds.appointment.fields.invoice') }}</label>
+                                                                <input class="form-control" type="number" name="weight" id="weight" value="{{ old('invoice', '') }}">
+                                                                @if($errors->has('invoice'))
+                                                                    <div class="invalid-feedback">
+                                                                        {{ $errors->first('invoice') }}
+                                                                    </div>
+                                                                @endif
+                                                                <span class="help-block">{{ trans('cruds.appointment.fields.invoice_helper') }}</span>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="power">{{ trans('cruds.appointment.fields.power') }}</label>
+                                                                <input class="form-control" type="number" name="power" id="power" value="{{ old('power', '') }}">
+                                                                @if($errors->has('power'))
+                                                                    <div class="invalid-feedback">
+                                                                        {{ $errors->first('power') }}
+                                                                    </div>
+                                                                @endif
+                                                                <span class="help-block">{{ trans('cruds.appointment.fields.power_helper') }}</span>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="power">{{ "الجلسه القادمه"}}</label>
+                                                                <input class="form-control" type="number" name="next_session" id="next_session" value="">
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="submit"
@@ -308,8 +329,64 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="modal fade" id="follow_up{{$appointment->id}}" tabindex="-1" role="dialog"
+                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Modal
+                                                            title</h5>
+                                                        <button type="button" class="close"
+                                                                data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="POST"
+                                                              action="{{ route("frontend.appointments.follow_up", $appointment->id ) }}"
+                                                              enctype="multipart/form-data">
+                                                            @method('POST')
+                                                            @csrf
+                                                            <div class="form-group">
+                                                                <label
+                                                                    for="comment">{{ trans('cruds.appointment.fields.comment') }}</label>
+                                                                <input class="form-control" type="text"
+                                                                       name="comment" id="comment"
+                                                                       value="{{ old('comment', '') }}">
+                                                                @if($errors->has('comment'))
+                                                                    <div class="invalid-feedback">
+                                                                        {{ $errors->first('comment') }}
+                                                                    </div>
+                                                                @endif
+                                                                <span
+                                                                    class="help-block">{{ trans('cruds.appointment.fields.comment_helper') }}</span>
+                                                            </div>
+                                                            <input type="text" value="1" name="follow_up" id="follow_up">
+                                                            <div class="modal-footer">
+                                                                <button type="submit"
+                                                                        class="btn btn-secondary"
+                                                                        data-dismiss="modal">Close
+                                                                </button>
+                                                                <div class="form-group">
+                                                                    <button class="btn btn-danger"
+                                                                            type="submit">
+                                                                        {{ trans('global.save') }}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
 
+                                                            <input type="text" name="check_out"
+                                                                   id="check_out"
+                                                                   value="1" hidden>
 
+                                                        </form>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
                                         {{--    modal end --}}
                                     @endforeach
                                     </tbody>
@@ -322,6 +399,6 @@
             </div>
         </div>
     </div>
-    {{--    --}}
+
 
 @endsection

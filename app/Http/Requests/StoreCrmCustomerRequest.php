@@ -24,7 +24,7 @@ class StoreCrmCustomerRequest extends FormRequest
             ],
             'gov' => [
                 'string',
-                'required',
+
             ],
             'address' => [
                 'string',
