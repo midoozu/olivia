@@ -114,7 +114,6 @@ else {
         $appointments = Appointment::with(['client', 'doctor', 'services', 'products', 'branch'])->where('branch_id', Auth::user()->branch_id)->whereDate('start_time', '=', date('Y-m-d'))->get();
         $test = CrmCustomer::with('clientAppointments.services')->first();
 
-
         $services = Service::pluck('name', 'id');
         return view('frontend.appointments.today' ,compact('appointments','services'));
     }
@@ -127,9 +126,9 @@ else {
         return view('frontend.appointments.tomorrow', compact('appointments'));
     }
 
-    public function entry(Request $request){
+    public function entry( Appointment $appointment, Request $request){
 
-        dd($request->PHP_SELF);
+
         $appointment->update([
             'payment_method'=>$request->payment_method,
             'price'=>$request->price,
@@ -137,9 +136,90 @@ else {
             'check_in'=>1
 
         ]);
-return $appointment;
+
+        if ($appointment->wasChanged) {
+            toastr()->success('تم التحديث بنجاح');
+        }
+        else{
+            toastr()->error('لم يتم التحديث');
+        }
+return redirect()->back();
     }
 
+    public function exit( Appointment $appointment, Request $request){
+
+        $date = Carbon::createFromFormat('Y-m-d H:i:s', $appointment->start_time);
+        $daysToAdd = $request->next_session;
+        $date = $date->addDays($daysToAdd);
+
+        $next_session = Appointment::create([
+            'client_id' =>$appointment->client_id,
+            'doctor_id'=>$appointment->doctor_id,
+            'start_time'=>$date,
+            'branch_id'=>$appointment->branch_id,
+        ]);
+        $next_session->services()->sync($appointment->services);
+
+        if ($next_session){
+            toastr()->success( 'تم حجز الجلسه القادمه يوم '. $next_session->start_time );
+        }
+
+        $appointment->update([
+            'comment'=>$request->comment,
+            'check_out'=>1,
+            'power'=> $request->power,
+            'pulse'=> $request->pulse,
+            'extra_pulse'=>$request->extra_pulse,
+            'weight'=>$request->weight,
+        ]);
+        if ($appointment->wasChanged() ){
+            toastr()->success('تم التحديث بنجاح');
+        }
+        else{
+            toastr()->error('لم يتم التحديث');
+        }
+
+        return redirect()->back();
+    }
+
+
+public function follow_up(Appointment $appointment){
+
+    $appointment->update([
+        'follow_up'=>1
+    ]);
+
+        toastr()->success('تمت المتابعه');
+        return redirect()->back();
+}
+
+
+public function check(Appointment $appointment){
+
+    $servic = Service::all();
+    $test = collect($servic)->map(function ($name , $key)  {
+        return (int)$name['name'];
+    }) ;
+    $intofservice = [];
+
+    foreach ($test as $item){
+    if ($item > 0){
+        array_push($intofservice,$item );
+             }
+    }
+    $users = Appointment::whereHas('services', function($q) use ($intofservice, $test, $appointment) {
+        $q->whereIn('name', $intofservice);
+        $q->where('client_id','=',$appointment->client_id);
+    })->latest()->first();
+    $pulseSum = Appointment::where(function ($q) use ($users, $appointment) {
+        $q->where('client_id','=',$appointment->client_id);
+        $q->where('start_time','>',$users->start_time);
+
+    })->sum('used_pulse');
+
+return [$users , $pulseSum];
+
+}
     public function edit(Appointment $appointment)
     {
         abort_if(Gate::denies('appointment_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');

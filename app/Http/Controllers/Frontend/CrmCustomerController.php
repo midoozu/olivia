@@ -34,7 +34,14 @@ class CrmCustomerController extends Controller
 
         return view('frontend.crmCustomers.create', compact('cus_statuses'));
     }
+public function new(StoreCrmCustomerRequest $request){
 
+    $crmCustomer = CrmCustomer::create($request->all());
+
+        toastr()->success('تم الاضافه بنجاح');
+
+        return redirect()->back();
+}
     public function store(StoreCrmCustomerRequest $request)
     {
         $crmCustomer = CrmCustomer::create($request->all());

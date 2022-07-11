@@ -51,16 +51,7 @@
                             @endif
                             <span class="help-block">{{ trans('cruds.appointment.fields.start_time_helper') }}</span>
                         </div>
-{{--                        <div class="form-group">--}}
-{{--                            <label class="required" for="finish_time">{{ trans('cruds.appointment.fields.finish_time') }}</label>--}}
-{{--                            <input class="form-control datetime" type="text" name="finish_time" id="finish_time" value="{{ old('finish_time', $appointment->finish_time) }}" required>--}}
-{{--                            @if($errors->has('finish_time'))--}}
-{{--                                <div class="invalid-feedback">--}}
-{{--                                    {{ $errors->first('finish_time') }}--}}
-{{--                                </div>--}}
-{{--                            @endif--}}
-{{--                            <span class="help-block">{{ trans('cruds.appointment.fields.finish_time_helper') }}</span>--}}
-{{--                        </div>--}}
+
                         <div class="form-group">
                             <label for="weight">{{ trans('cruds.appointment.fields.invoice') }}</label>
                             <input class="form-control" type="number" name="weight" id="weight" value="{{ old('invoice', '') }}">
